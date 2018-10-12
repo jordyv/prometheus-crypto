@@ -1,6 +1,6 @@
 FROM golang:alpine AS builder
 
-RUN apk --update --no-cache add curl
+RUN apk --update --no-cache add curl git
 COPY . /go/src/github.com/jordyv/prometheus-crypto
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 WORKDIR /go/src/github.com/jordyv/prometheus-crypto
