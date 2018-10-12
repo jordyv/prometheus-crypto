@@ -1,5 +1,13 @@
 # Prometheus exporter for cryptocurrency rates from the Litebit API #
 
+## Installation ##
+
+### Using Docker ###
+
+```
+$ docker run -p 8888:8888 jordyversmissen/prometheus-crypto
+```
+
 ## Usage ##
 
 ```
