@@ -1,0 +1,8 @@
+
+[prune]
+  go-tests = true
+  unused-packages = true
+
+[[constraint]]
+  name = "github.com/jordyv/crypto-sync"
+  version = "1.0.0"
