@@ -5,7 +5,7 @@
 ### Using Docker ###
 
 ```
-$ docker run -p 8888:8888 jordyversmissen/prometheus-crypto
+$ docker run -p 8888:8888 jordyversmissen/prometheus-crypto -interval 10s lsk part btc
 ```
 
 ## Usage ##
