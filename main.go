@@ -22,9 +22,9 @@ var (
 )
 
 type CoinCollector struct {
-	CoinCode      string
-	BuyHistogram  prometheus.Histogram
-	SellHistogram prometheus.Histogram
+	CoinCode  string
+	BuyGauge  prometheus.Gauge
+	SellGauge prometheus.Gauge
 }
 
 func init() {
@@ -39,17 +39,17 @@ func init() {
 	}
 
 	for _, coin := range coins {
-		sell := prometheus.NewHistogram(prometheus.HistogramOpts{
+		sell := prometheus.NewGauge(prometheus.GaugeOpts{
 			Name:        "crypto_sell_rate",
 			Help:        "Sell rate",
 			ConstLabels: prometheus.Labels{"coin": coin},
 		})
-		buy := prometheus.NewHistogram(prometheus.HistogramOpts{
+		buy := prometheus.NewGauge(prometheus.GaugeOpts{
 			Name:        "crypto_buy_rate",
 			Help:        "Buy rate",
 			ConstLabels: prometheus.Labels{"coin": coin},
 		})
-		collectors = append(collectors, CoinCollector{SellHistogram: sell, BuyHistogram: buy, CoinCode: coin})
+		collectors = append(collectors, CoinCollector{SellGauge: sell, BuyGauge: buy, CoinCode: coin})
 	}
 
 	if *verbose {
@@ -62,8 +62,8 @@ func init() {
 func main() {
 	registry := prometheus.NewRegistry()
 	for _, collector := range collectors {
-		registry.MustRegister(collector.BuyHistogram)
-		registry.MustRegister(collector.SellHistogram)
+		registry.MustRegister(collector.BuyGauge)
+		registry.MustRegister(collector.SellGauge)
 	}
 
 	go func() {
@@ -77,11 +77,11 @@ func main() {
 
 				if buy, err := strconv.ParseFloat(result.Result.Buy, 64); err == nil {
 					log.Debugf("Set buy metric to %f for coin '%s'", buy, collector.CoinCode)
-					collector.BuyHistogram.Observe(buy)
+					collector.BuyGauge.Set(buy)
 				}
 				if sell, err := strconv.ParseFloat(result.Result.Sell, 64); err == nil {
 					log.Debugf("Set sell metric to %f for coin '%s'", sell, collector.CoinCode)
-					collector.SellHistogram.Observe(sell)
+					collector.SellGauge.Set(sell)
 				}
 			}
 			time.Sleep(refreshDuration)
